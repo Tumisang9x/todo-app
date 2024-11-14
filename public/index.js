@@ -1,74 +1,120 @@
-const inputBox = document.getElementById("input-box");
-const listContainer = document.getElementById("list-container");
+document.addEventListener('DOMContentLoaded', () => {
+    const taskInput = document.getElementById('taskInput');
+    const addTaskButton = document.getElementById('addTaskButton');
+    const taskList = document.getElementById('taskList');
 
-// Function to load tasks from the server
-async function loadTasks() {
-  try {
-    const response = await fetch('/tasks');
-    const data = await response.json();
-    listContainer.innerHTML = ''; // Clear the current list
-    data.forEach((task, index) => {
-      const li = document.createElement("li");
-      li.textContent = task.task;
-      if (task.completed) {
-        li.classList.add("checked");
-      }
+    // Load tasks from the server when the page loads
+    loadTasks();
 
-      const span = document.createElement("span");
-      span.textContent = "\u00d7";
-      li.appendChild(span);
+    // Add new task when the Add Task button is clicked
+    addTaskButton.addEventListener('click', () => {
+        const taskText = taskInput.value.trim();
+        if (taskText === '') {
+            alert('Please enter a task');
+            return;
+        }
 
-      listContainer.appendChild(li);
+        // Send the task to the server
+        fetch('/tasks', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ task: taskText })
+        })
+        .then(response => response.json())
+        .then(data => {
+            taskInput.value = '';  // Clear the input field after adding the task
+            loadTasks();  // Reload tasks from the server
+        })
+        .catch(err => console.error('Error adding task:', err));
     });
-  } catch (error) {
-    console.error('Error loading tasks:', error);
-  }
-}
 
-// Function to add a new task
-async function addTask() {
-  if (inputBox.value === '') {
-    alert("You must write something!");
-  } else {
-    try {
-      const response = await fetch('/tasks', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ task: inputBox.value }), // Send task as JSON
-      });
-
-      const result = await response.json();
-      if (response.status === 201) {
-        loadTasks(); // Reload tasks after adding
-      } else {
-        alert(result.message); // Show error message
-      }
-    } catch (error) {
-      console.error('Error adding task:', error);
-      alert('An error occurred while adding the task.');
+    // Load tasks from the server
+    function loadTasks() {
+        fetch('/tasks')
+            .then(response => response.json())
+            .then(data => {
+                taskList.innerHTML = '';  // Clear the list before adding new tasks
+                data.forEach(task => {
+                    displayTask(task);
+                });
+            })
+            .catch(err => console.error('Error loading tasks:', err));
     }
-    inputBox.value = ''; // Clear input box
-  }
-}
 
-// Event listener for the Add Task button
-const addButton = document.querySelector('button');
-addButton.addEventListener('click', addTask);
+    // Display a task in the list
+    function displayTask(task) {
+        const li = document.createElement('li');
+        li.textContent = task.task;
+        li.classList.toggle('completed', task.completed);  // Add "completed" class if the task is completed
 
-// Event listener to handle clicking tasks or delete buttons
-listContainer.addEventListener("click", async function (e) {
-  if (e.target.tagName === "LI") {
-    const index = Array.from(listContainer.children).indexOf(e.target);
-    await fetch(`/tasks/${index}`, { method: 'PUT' });
-    e.target.classList.toggle("checked");
-  } else if (e.target.tagName === "SPAN") {
-    const index = Array.from(listContainer.children).indexOf(e.target.parentElement);
-    await fetch(`/tasks/${index}`, { method: 'DELETE' });
-    e.target.parentElement.remove();
-  }
+        // Mark task as completed when clicked
+        li.addEventListener('click', () => {
+            toggleTaskCompletion(task.id, li);
+        });
+
+        // Edit task button
+        const editButton = document.createElement('button');
+        editButton.textContent = 'Edit';
+        editButton.classList.add('edit-btn');
+        editButton.onclick = (e) => {
+            e.stopPropagation();  // Prevent triggering the click event to mark as complete
+            editTask(task, li);
+        };
+
+        // Delete task button
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Delete';
+        deleteButton.classList.add('delete-btn');
+        deleteButton.onclick = (e) => {
+            e.stopPropagation();  // Prevent triggering the click event to mark as complete
+            deleteTask(task.id, li);
+        };
+
+        li.appendChild(editButton);
+        li.appendChild(deleteButton);
+        taskList.appendChild(li);
+    }
+
+    // Toggle task completion (mark as completed or not)
+    function toggleTaskCompletion(taskId, li) {
+        fetch(`/tasks/${taskId}/toggle`, { method: 'PATCH' })
+            .then(response => response.json())
+            .then(data => {
+                li.classList.toggle('completed', data.completed);
+            })
+            .catch(err => console.error('Error toggling completion:', err));
+    }
+
+    // // Edit a task
+    // function editTask(task, li) {
+    //     const newTaskText = prompt('Edit task:', task.task);
+    //     if (newTaskText && newTaskText.trim() !== task.task) {
+    //         fetch(`/tasks/${task.id}`, {
+    //             method: 'PUT',
+    //             headers: {
+    //                 'Content-Type': 'application/json'
+    //             },
+    //             body: JSON.stringify({ task: newTaskText })
+    //         })
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             li.textContent = newTaskText;
+    //             li.appendChild(editButton);
+    //             li.appendChild(deleteButton);
+    //         })
+    //         .catch(err => console.error('Error editing task:', err));
+    //     }
+    // }
+
+    // Delete a task
+    function deleteTask(taskId, li) {
+        fetch(`/tasks/${taskId}`, { method: 'DELETE' })
+            .then(() => {
+                li.remove();
+            })
+            .catch(err => console.error('Error deleting task:', err));
+    }
+    
 });
-
-// Load saved tasks when the page loads
-loadTasks();
