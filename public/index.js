@@ -87,26 +87,6 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(err => console.error('Error toggling completion:', err));
     }
 
-    // // Edit a task
-    // function editTask(task, li) {
-    //     const newTaskText = prompt('Edit task:', task.task);
-    //     if (newTaskText && newTaskText.trim() !== task.task) {
-    //         fetch(`/tasks/${task.id}`, {
-    //             method: 'PUT',
-    //             headers: {
-    //                 'Content-Type': 'application/json'
-    //             },
-    //             body: JSON.stringify({ task: newTaskText })
-    //         })
-    //         .then(response => response.json())
-    //         .then(data => {
-    //             li.textContent = newTaskText;
-    //             li.appendChild(editButton);
-    //             li.appendChild(deleteButton);
-    //         })
-    //         .catch(err => console.error('Error editing task:', err));
-    //     }
-    // }
 
     // Delete a task
     function deleteTask(taskId, li) {
