@@ -8,16 +8,20 @@
 /* Apply a solid background color to the body and space for header */
 body {
   font-family: Arial, sans-serif;
-  color: #333;
+  color: #131212;
   display: flex;
   flex-direction: column; /* Stack elements vertically */
   height: 100vh;  /* Full viewport height */
   background-color: #fdfbfb; /* Light gray background */
+  background-image: url('/images/pic.webp');
+  background-size: 100%; /* Ensure the background image covers the entire container */
+ 
+  
 }
 
 /* Header styling */
 header {
-  background-image: url('images/to-do.jpg');
+  
   background-size: cover; /* Ensures the image covers the entire header area */
   background-position: center center; /* Ensures the image is centered both vertically and horizontally */
   background-repeat: no-repeat; /* Prevents the image from repeating */
@@ -42,7 +46,7 @@ header h1 {
 .container {
   max-width: 600px;
   width: 100%;
-  background-color: rgba(156, 152, 152, 0.8); /* Semi-transparent white background */
+  background-color: rgba(219, 205, 160, 0.8); /* Semi-transparent white background */
   padding: 70px;
   border-radius: 27px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
