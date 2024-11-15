@@ -1,51 +1,55 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const path = require('path');
-
 const app = express();
 const port = 3000;
 
-// Middleware to parse form data
-app.use(bodyParser.urlencoded({ extended: true }));
+let tasks = []; // Store tasks in memory (for simplicity)
 
-// Serve static files (CSS, JS, etc.)
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json()); // For parsing JSON requests
 
-// Array to hold the todo items (in-memory storage)
-let todoList = [];
-
-// Route to render the HTML page
+// Serve the main page (index.html)
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Route to get all todo items
-app.get('/todos', (req, res) => {
-  res.json(todoList);
+// API to get all tasks
+app.get('/tasks', (req, res) => {
+  res.json(tasks);
 });
 
-// Route to add a new todo item
-app.post('/add', (req, res) => {
+// API to add a new task
+app.post('/tasks', (req, res) => {
   const task = req.body.task;
   if (task) {
-    todoList.push({ task, id: Date.now() });
+    tasks.push({ id: Date.now(), task, completed: false });
+    res.status(201).json({ message: 'Task added' });
+  } else {
+    res.status(400).json({ message: 'Task content is required' });
   }
-  res.redirect('/');
 });
 
-// Route to delete a todo item
-app.post('/delete', (req, res) => {
-  const id = req.body.id;
-  todoList = todoList.filter(todo => todo.id != id);
-  res.redirect('/');
+// API to delete a task
+app.delete('/tasks/:id', (req, res) => {
+  const taskId = parseInt(req.params.id);
+  tasks = tasks.filter(task => task.id !== taskId);
+  res.status(200).json({ message: 'Task deleted' });
 });
+
+// API to toggle the completion status of a task
+app.patch('/tasks/:id/toggle', (req, res) => {
+  const taskId = parseInt(req.params.id);
+  const task = tasks.find(task => task.id === taskId);
+  if (task) {
+    task.completed = !task.completed;  // Toggle completion
+    res.status(200).json({ message: 'Task completion status toggled', completed: task.completed });
+  } else {
+    res.status(404).json({ message: 'Task not found' });
+  }
+});
+
 
 // Start the server
 app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
+  console.log(`Server running at http://localhost:${port}`);
 });
-http.createServer(function (req, res) {
-    res.writeHead(200, {'Content-Type': 'text/html'});
-    res.write("The date and time is currently: " + dt.myDateTime());
-    res.end();
-  }).listen(8080);
