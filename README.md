@@ -17,30 +17,52 @@ It allows users to add, delete, and mark tasks as completed. This app stores tas
 
 ## Features
 
-- Responsive design for desktop and mobile views
-- Project descriptions
-- Contact form for inquiries
+- Add tasks: Users can add new tasks to the list.
+- Mark as Completed: Tasks can be marked as completed by clicking on them.
+- Delete tasks: Tasks can be deleted from the list.
+- Persistent Data: Tasks are temporarily stored in memory on the server.
 
 ## Technologies Used
 
-- HTML
-- Node.js: Backend server for handling API requests.
-- Express: Web framework for handling routes and API endpoints.
-- Vanilla JavaScript: Frontend for interacting with the user interface.
-- CSS: Basic styling to make the app visually appealing.
-- Visual studio code
-- JSON: Data format used for storing tasks (in-memory).
+- HTML5: Structure and layout of the web page.
+- CSS3: Styling for the page and task list.
+- JavaScript: Client-side functionality to manage the tasks.
+- Node.js: Backend server to handle requests and serve static files.
+- Express.js: Web framework for handling routing and API requests.
 
 
 
 
 ## Installation
 
-To view this project locally, follow these steps:
+To run this project locally, you need:
 
-1. live link: https://todo-app-h0jq.onrender.com
+Node.js and npm (Node Package Manager) installed. You can download them from here: https://nodejs.org/.
+
+- Install dependencies:
+
+bash
+
+npm install
+
+- Start the server:
+
+bash
+
+npm start
+This will start the server at http://localhost:3000.
+
+- 1. live link: https://todo-app-h0jq.onrender.com
+
+## Project Structure 
+
+public/: Contains all static files served to the client (HTML, CSS, JS, images).
+- index.html: The main HTML file.
+- style.css: The CSS file with styles for the app.
+- index.js: JavaScript file containing the client-side logic.
+- server.js: The Express server file that handles API routes and serves the app.
 
 ## Contact
--Tumisang.matona@capaciti.org.za
--Tumisangmatona@gmail.com
--0748111221
+- Tumisang.matona@capaciti.org.za
+- Tumisangmatona@gmail.com
+- 0748111221
