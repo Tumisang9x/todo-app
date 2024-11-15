@@ -30,7 +30,7 @@ It allows users to add, delete, and mark tasks as completed. This app stores tas
 - CSS: Basic styling to make the app visually appealing.
 - Visual studio code
 - JSON: Data format used for storing tasks (in-memory).
-Screenshots
+
 
 
 
